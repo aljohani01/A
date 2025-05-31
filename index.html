@@ -194,7 +194,7 @@
             min-width: 80px;
         }
         
-        /* حل مشكلة عمود الإجراءات للمستخدم العادي */
+        /* إصلاح مشكلة الفراغ الأبيض للمستخدم العادي */
         .admin-only-column {
             display: none;
         }
@@ -779,7 +779,6 @@
                                     <th>الإسم</th>
                                     <th>التاريخ</th>
                                     <th>المبلغ (ريال)</th>
-                                    <!-- حل مشكلة الفراغ الأبيض للمستخدم العادي -->
                                     <th class="admin-only-column">الإجراءات</th>
                                 </tr>
                             </thead>
@@ -812,7 +811,6 @@
                                 <tr>
                                     <th>الإسم</th>
                                     <th>المبلغ (ريال)</th>
-                                    <!-- حل مشكلة الفراغ الأبيض للمستخدم العادي -->
                                     <th class="admin-only-column">الإجراءات</th>
                                 </tr>
                             </thead>
@@ -913,15 +911,7 @@
             </div>
             
             <div class="token-help">
-                <p><strong>كيفية الحصول على GitHub Token:</strong></p>
-                <ul>
-                    <li>اذهب إلى <a href="https://github.com/settings/tokens" target="_blank">GitHub Tokens Settings</a></li>
-                    <li>انقر على "Generate new token"</li>
-                    <li>أعط الـ Token اسماً مثل "جمعية-الكشوش"</li>
-                    <li>حدد الصلاحيات: <code>repo</code> و <code>workflow</code></li>
-                    <li>انسخ الـ Token الذي تم إنشاؤه وأدخله هنا</li>
-                    <li>احفظ الـ Token في مكان آمن لأنه لن يعرض مرة أخرى</li>
-                </ul>
+                <p>لحفظ البيانات على GitHub، يلزمك إدخال رمز الوصول الشخصي (Token) الذي تم إنشاؤه في إعدادات GitHub.</p>
             </div>
             
             <div class="progress-container" id="progressContainer" style="display: none;">
@@ -1361,7 +1351,6 @@
                 updateProgress(60);
                 
                 // حل مشكلة الخطأ "String contains an invalid character"
-                // باستخدام ترميز UTF-8 بشكل صحيح
                 const dataStr = JSON.stringify(window.appData, null, 2);
                 const encoder = new TextEncoder();
                 const dataBytes = encoder.encode(dataStr);
@@ -1376,7 +1365,7 @@
                         'Accept': 'application/vnd.github.v3+json'
                     },
                     body: JSON.stringify({
-                        message: 'تحديث بيانات الكشوش',
+                        message: 'تحديث بيانات  الكشوش',
                         content: base64Data,
                         sha: sha
                     })
