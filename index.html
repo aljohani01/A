@@ -177,13 +177,13 @@
             border-radius: var(--border-radius);
             -webkit-overflow-scrolling: touch;
             margin-bottom: 20px;
-            min-width: 100%; /* حل مشكلة الجدول غير الظاهر بالكامل */
+            min-width: 100%;
         }
         
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 400px; /* زيادة العرض الأدنى للجدول */
+            min-width: 400px;
         }
         
         th, td {
@@ -191,7 +191,16 @@
             text-align: center;
             border-bottom: 1px solid #eee;
             font-size: 0.95rem;
-            min-width: 80px; /* منع تضييق الخلايا */
+            min-width: 80px;
+        }
+        
+        /* حل مشكلة عمود الإجراءات للمستخدم العادي */
+        .admin-only-column {
+            display: none;
+        }
+        
+        .admin-mode .admin-only-column {
+            display: table-cell;
         }
         
         thead {
@@ -770,7 +779,8 @@
                                     <th>الإسم</th>
                                     <th>التاريخ</th>
                                     <th>المبلغ (ريال)</th>
-                                    <th class="admin-only">الإجراءات</th>
+                                    <!-- حل مشكلة الفراغ الأبيض للمستخدم العادي -->
+                                    <th class="admin-only-column">الإجراءات</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -802,7 +812,8 @@
                                 <tr>
                                     <th>الإسم</th>
                                     <th>المبلغ (ريال)</th>
-                                    <th class="admin-only">الإجراءات</th>
+                                    <!-- حل مشكلة الفراغ الأبيض للمستخدم العادي -->
+                                    <th class="admin-only-column">الإجراءات</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -1162,7 +1173,7 @@
                         contenteditable="${isAdmin}" 
                         data-field="amount" 
                         data-index="${index}">${event.amount}</td>
-                    <td class="admin-only">
+                    <td class="admin-only-column">
                         <button class="delete-btn" data-type="event" data-index="${index}">×</button>
                     </td>
                 `;
@@ -1190,7 +1201,7 @@
                         contenteditable="${isAdmin}" 
                         data-field="amount" 
                         data-index="${index}">${payment.amount}</td>
-                    <td class="admin-only">
+                    <td class="admin-only-column">
                         <button class="delete-btn" data-type="payment" data-index="${index}">×</button>
                     </td>
                 `;
@@ -1349,6 +1360,13 @@
                 
                 updateProgress(60);
                 
+                // حل مشكلة الخطأ "String contains an invalid character"
+                // باستخدام ترميز UTF-8 بشكل صحيح
+                const dataStr = JSON.stringify(window.appData, null, 2);
+                const encoder = new TextEncoder();
+                const dataBytes = encoder.encode(dataStr);
+                const base64Data = btoa(String.fromCharCode(...new Uint8Array(dataBytes)));
+                
                 // تحديث الملف
                 const updateResponse = await fetch('https://api.github.com/repos/aljohani01/A/contents/data.json', {
                     method: 'PUT',
@@ -1359,7 +1377,7 @@
                     },
                     body: JSON.stringify({
                         message: 'تحديث بيانات جمعية الكشوش',
-                        content: btoa(JSON.stringify(window.appData, null, 2)),
+                        content: base64Data,
                         sha: sha
                     })
                 });
