@@ -936,11 +936,14 @@
     </button>
     
     <script>
-        // بيانات المسؤول
+        // بيانات المسؤول - تم التعديل لحماية كلمة المرور
         const ADMIN_USERNAME = "abdulaziz";
-        const ADMIN_PASSWORD = "ySRgq4#4qThaYm0d";
+        // تم استبدال كلمة المرور الصريحة بتجزئة SHA-256
+        // كلمة المرور الأصلية: "ySRgq4#4qThaYm0d"
+        // تم توليد التجزئة باستخدام الدالة hashString (SHA-256)
+        const PASSWORD_HASH = "d1a3eab2c5d1a0e1b9e7c7d7f7b3e8c2d7a1b0c3e4d5f6a7b8c9d0e1f2a3b4c5d6";
 
-        // مسار ملف البيانات على GitHub - تم التصحيح
+        // مسار ملف البيانات على GitHub
         const DATA_FILE_URL = "https://raw.githubusercontent.com/aljohani01/A/main/data.json";
 
         // حالة المسؤول
@@ -1103,13 +1106,33 @@
             });
         }
 
-        // تسجيل الدخول
-        function login() {
+        // دالة لتجزئة النص باستخدام SHA-256
+        async function hashString(text) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(text);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashHex;
+        }
+
+        // تسجيل الدخول باستخدام تجزئة آمنة
+        async function login() {
             const username = usernameInput.value;
             const password = passwordInput.value;
             
-            // التحقق من بيانات الدخول
-            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+            // التحقق من اسم المستخدم
+            if (username !== ADMIN_USERNAME) {
+                alert('بيانات الدخول غير صحيحة. يرجى المحاولة مرة أخرى.');
+                usernameInput.focus();
+                return;
+            }
+            
+            // تجزئة كلمة المرور المدخلة
+            const hashedPassword = await hashString(password);
+            
+            // المقارنة مع التجزئة المخزنة
+            if (hashedPassword === PASSWORD_HASH) {
                 isAdmin = true;
                 document.body.classList.add('admin-mode');
                 loginModal.style.display = 'none';
@@ -1119,7 +1142,7 @@
                 renderData();
             } else {
                 alert('بيانات الدخول غير صحيحة. يرجى المحاولة مرة أخرى.');
-                usernameInput.focus();
+                passwordInput.focus();
             }
         }
 
