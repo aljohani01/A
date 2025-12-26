@@ -5,8 +5,8 @@
         "name": "حامد حميد الكشي",
         "date": "1447/06/07",
         "amount": 500,
-        "additionalAmount": 0,
-        "addedBy": ""
+        "additionalAmount": 500,
+        "addedBy": "سعد"
       }
     ],
     "specialEvents": [
@@ -127,5 +127,5 @@
       "archivedDate": "٢٦ ديسمبر ٢٠٢٥"
     }
   ],
-  "lastUpdate": "٢٦ ديسمبر ٢٠٢٥ في ٠٥:٣٢ م"
+  "lastUpdate": "٢٦ ديسمبر ٢٠٢٥ في ١٠:١٠ م"
 }
