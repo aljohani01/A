@@ -1181,11 +1181,8 @@
         <div class="token-container">
             <h2>حفظ البيانات على GitHub</h2>
             <div class="form-group">
-                <label for="githubToken">GitHub Personal Access Token</label>
-                <input type="password" id="githubToken" placeholder="أدخل Token هنا">
-                <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 8px;">
-                    
-                </div>
+                <label for="githubToken">GitHub Token</label>
+                <input type="password" id="githubToken" placeholder="أدخل Token">
             </div>
             <div class="progress-container" id="progressContainer">
                 <div class="progress-bar" id="progressBar"></div>
@@ -1912,12 +1909,22 @@
             showToast('تم الأرشفة والبدء بدورة جديدة', 'success');
         }
 
+        // إصلاح دالة تعديل الأرشيف
         function editArchiveCycle(index) {
-            if (!confirm('هل تريد تحميل هذه الدورة للتعديل؟')) {
+            if (!isAdmin) {
+                showToast('يجب تسجيل الدخول كمسؤول', 'error');
+                return;
+            }
+            
+            if (!confirm('هل تريد تحميل هذه الدورة للتعديل؟ سيتم أرشفة البيانات الحالية أولاً.')) {
                 return;
             }
 
-            if (window.appData.currentCycle.events.length > 0 || window.appData.currentCycle.payments.length > 0) {
+            // إذا كان هناك بيانات حالية، نقوم بأرشفتها أولاً
+            if (window.appData.currentCycle.events.length > 0 || 
+                window.appData.currentCycle.payments.length > 0 ||
+                window.appData.currentCycle.specialEvents.length > 0) {
+                
                 const eventsTotal = window.appData.currentCycle.events.reduce((t, e) => 
                     t + (e.amount || 0) + (e.additionalAmount || 0), 0);
                 const paymentsTotal = window.appData.currentCycle.payments.reduce((t, p) => 
@@ -1940,30 +1947,47 @@
                         day: 'numeric'
                     })
                 };
+                
+                if (!window.appData.archive) {
+                    window.appData.archive = [];
+                }
                 window.appData.archive.unshift(tempArchive);
             }
 
+            // تحميل الدورة المؤرشفة
             const archiveCycle = window.appData.archive[index];
+            
+            // تحويل البيانات المؤرشفة إلى البيانات الحالية
             window.appData.currentCycle = {
                 events: archiveCycle.events.map(event => ({
-                    ...event,
-                    date: formatHijriDate(event.date)
+                    name: event.name || '',
+                    date: formatHijriDate(event.date || getHijriDate()),
+                    amount: event.amount || 0,
+                    additionalAmount: event.additionalAmount || 0,
+                    addedBy: event.addedBy || ''
                 })),
                 specialEvents: (archiveCycle.specialEvents || []).map(event => ({
-                    ...event,
-                    date: formatHijriDate(event.date)
+                    name: event.name || '',
+                    date: formatHijriDate(event.date || getHijriDate()),
+                    amount: event.amount || 0
                 })),
-                payments: [...archiveCycle.payments],
-                currentDate: formatHijriDate(archiveCycle.endDate),
-                startDate: formatHijriDate(archiveCycle.startDate)
+                payments: archiveCycle.payments.map(payment => ({
+                    name: payment.name || '',
+                    amount: payment.amount || 0
+                })),
+                currentDate: formatHijriDate(archiveCycle.endDate || getHijriDate()),
+                startDate: formatHijriDate(archiveCycle.startDate || getHijriDate())
             };
 
+            // إزالة الدورة من الأرشيف
             window.appData.archive.splice(index, 1);
-            editingArchiveIndex = index;
-            editModeBadge.style.display = 'flex';
-
+            
+            // إغلاق نافذة الأرشيف
             closeArchive();
+            
+            // تحديث الواجهة
             renderData();
+            editModeBadge.style.display = 'flex';
             
             showToast('تم تحميل الدورة للتعديل', 'success');
         }
@@ -2017,7 +2041,7 @@
                             <button onclick="editArchiveCycle(${index})" class="btn btn-warning btn-sm">
                                 تعديل
                             </button>
-                            <button onclick="deleteCycle(${index})" class="btn btn-danger btn-sm">
+                            <button onclick="deleteArchiveCycle(${index})" class="btn btn-danger btn-sm">
                                 حذف
                             </button>` : ''}
                         </div>
@@ -2034,6 +2058,21 @@
             `;
 
             document.body.insertAdjacentHTML('beforeend', archiveHTML);
+        }
+
+        // تغيير اسم الدالة لتجنب التعارض
+        function deleteArchiveCycle(index) {
+            if (!isAdmin) {
+                showToast('يجب تسجيل الدخول كمسؤول', 'error');
+                return;
+            }
+            
+            if (confirm('⚠️ هل تريد حذف هذه الدورة من الأرشيف؟')) {
+                window.appData.archive.splice(index, 1);
+                closeArchive();
+                showArchive();
+                showToast('تم حذف الدورة', 'success');
+            }
         }
 
         window.viewCycleDetails = function(index) {
@@ -2142,21 +2181,14 @@
             document.body.insertAdjacentHTML('beforeend', detailsHTML);
         };
 
-        window.deleteCycle = function(index) {
-            if (confirm('⚠️ هل تريد حذف هذه الدورة؟')) {
-                window.appData.archive.splice(index, 1);
-                closeArchive();
-                showArchive();
-                showToast('تم حذف الدورة', 'success');
-            }
-        };
-
         window.closeArchive = function() {
             const modal = document.querySelector('.archive-modal');
             if (modal) modal.remove();
         };
 
+        // جعل الدوال متاحة عالمياً
         window.editArchiveCycle = editArchiveCycle;
+        window.deleteArchiveCycle = deleteArchiveCycle;
 
         async function saveDataToGitHub() {
             const token = githubTokenInput.value.trim();
@@ -2179,40 +2211,29 @@
             updateProgress(10);
 
             try {
-                // أولاً: جلب معلومات الملف الحالي للحصول على SHA
+                // جلب معلومات الملف الحالي
                 updateProgress(30);
                 let sha = null;
-                let fileExists = false;
                 
-                try {
-                    const getResponse = await fetch(GITHUB_API_URL, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                            'Accept': 'application/vnd.github.v3+json'
-                        }
-                    });
-                    
-                    if (getResponse.ok) {
-                        const fileInfo = await getResponse.json();
-                        sha = fileInfo.sha;
-                        fileExists = true;
-                        showToast('تم العثور على الملف، جاري التحديث...', 'success');
-                    } else if (getResponse.status === 404) {
-                        showToast('سيتم إنشاء ملف جديد', 'warning');
-                    } else {
-                        const errorData = await getResponse.json();
-                        throw new Error(`فشل في الوصول إلى المستودع: ${errorData.message || getResponse.status}`);
+                const getResponse = await fetch(GITHUB_API_URL, {
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Accept': 'application/vnd.github.v3+json'
                     }
-                } catch (error) {
-                    throw new Error(`خطأ في الاتصال: ${error.message}`);
+                });
+                
+                if (getResponse.ok) {
+                    const fileInfo = await getResponse.json();
+                    sha = fileInfo.sha;
+                } else if (getResponse.status !== 404) {
+                    const errorData = await getResponse.json();
+                    throw new Error(`خطأ في الوصول إلى المستودع: ${errorData.message || getResponse.status}`);
                 }
 
                 updateProgress(60);
 
                 // تحضير البيانات
                 const dataStr = JSON.stringify(window.appData, null, 2);
-                
-                // تحويل إلى base64 بشكل صحيح
                 const base64Data = btoa(unescape(encodeURIComponent(dataStr)));
 
                 const body = {
@@ -2224,7 +2245,6 @@
                     }
                 };
 
-                // إضافة SHA إذا كان الملف موجوداً
                 if (sha) {
                     body.sha = sha;
                 }
@@ -2235,7 +2255,7 @@
                 const updateResponse = await fetch(GITHUB_API_URL, {
                     method: 'PUT',
                     headers: {
-                        'Authorization': `Bearer ${token}`,
+                        'Authorization': `token ${token}`,
                         'Content-Type': 'application/json',
                         'Accept': 'application/vnd.github.v3+json'
                     },
@@ -2250,13 +2270,10 @@
                     if (errorData.message) {
                         errorMsg += `: ${errorData.message}`;
                         
-                        // رسائل خطأ مفيدة
                         if (errorData.message.includes('bad credentials')) {
-                            errorMsg = 'Token غير صالح. يرجى التحقق من صحة الـ Token';
+                            errorMsg = 'Token غير صالح';
                         } else if (errorData.message.includes('Not Found')) {
-                            errorMsg = 'المستودع غير موجود أو ليس لديك صلاحية الوصول إليه';
-                        } else if (errorData.message.includes('This repository is empty')) {
-                            errorMsg = 'المستودع فارغ. يرجى التأكد من وجود ملف data.json في المستودع';
+                            errorMsg = 'المستودع غير موجود';
                         }
                     }
                     throw new Error(errorMsg);
@@ -2273,11 +2290,10 @@
                     editingArchiveIndex = null;
                     githubTokenInput.value = '';
                     
-                    // إعادة تحميل البيانات بعد الحفظ للتأكد من المزامنة
+                    // إعادة تحميل البيانات
                     setTimeout(() => {
                         loadDataFromGitHub().then(() => {
                             renderData();
-                            showToast('تم مزامنة البيانات مع GitHub', 'success');
                         });
                     }, 1000);
                     
@@ -2287,11 +2303,6 @@
                 console.error('خطأ في الحفظ:', error);
                 showToast(`خطأ في الحفظ: ${error.message}`, 'error');
                 progressContainer.style.display = 'none';
-                
-                // عرض خيار نسخ البيانات يدوياً
-                if (confirm('فشل الحفظ التلقائي. هل تريد نسخ البيانات يدوياً؟')) {
-                    showDataForCopy();
-                }
             }
         }
 
@@ -2324,20 +2335,6 @@
                 color: var(--text-primary);
             `;
 
-            const instructions = document.createElement('div');
-            instructions.style.cssText = `
-                background: var(--bg-secondary);
-                padding: 15px;
-                border-radius: 8px;
-                margin: 15px 0;
-                border: 1px solid var(--border-color);
-                font-size: 0.9rem;
-                color: var(--text-secondary);
-            `;
-            instructions.innerHTML = `
-
-            `;
-
             const controls = document.createElement('div');
             controls.style.cssText = `
                 display: flex; gap: 10px; margin-top: 16px; justify-content: center;
@@ -2352,7 +2349,6 @@
             closeBtn.textContent = 'إغلاق';
 
             dataDisplay.appendChild(textarea);
-            dataDisplay.appendChild(instructions);
             controls.appendChild(copyBtn);
             controls.appendChild(closeBtn);
             dataDisplay.appendChild(controls);
