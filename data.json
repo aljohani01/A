@@ -3,70 +3,22 @@
     "events": [
       {
         "name": "حامد حميد الكشي",
-        "date": "1446/12/03",
-        "amount": 500,
-        "additionalAmount": 0,
-        "addedBy": ""
-      },
-      {
-        "name": "مسعد مبارك الكشي",
-        "date": "1446/12/04",
-        "amount": 500,
-        "additionalAmount": 0,
-        "addedBy": ""
-      },
-      {
-        "name": "ناصر حمدان الكشي",
-        "date": "1447/01/02",
-        "amount": 500,
-        "additionalAmount": 0,
-        "addedBy": ""
-      },
-      {
-        "name": "عواد مبروك الكشي",
-        "date": "1447/04/25",
-        "amount": 600,
-        "additionalAmount": 400,
-        "addedBy": "مسند"
-      },
-      {
-        "name": "عويضة محمد الكشي",
-        "date": "1447/05/22",
-        "amount": 500,
-        "additionalAmount": 0,
-        "addedBy": ""
-      },
-      {
-        "name": "نافل حميد الكشي",
         "date": "1447/06/07",
-        "amount": 400,
-        "additionalAmount": 0,
-        "addedBy": ""
-      },
-      {
-        "name": "صلاح حمدان الكشي",
-        "date": "1447/06/21",
         "amount": 500,
         "additionalAmount": 0,
         "addedBy": ""
       }
     ],
-    "specialEvents": [],
+    "specialEvents": [
+      {
+        "name": "سعد عواد الحربي",
+        "date": "1447/02/02",
+        "amount": 500
+      }
+    ],
     "payments": [
       {
         "name": "مسند",
-        "amount": 500
-      },
-      {
-        "name": "مازن",
-        "amount": 500
-      },
-      {
-        "name": "سعود",
-        "amount": 500
-      },
-      {
-        "name": "علي",
         "amount": 500
       },
       {
@@ -76,40 +28,84 @@
       {
         "name": "عبدالعزيز",
         "amount": 500
-      },
-      {
-        "name": "ابراهيم",
-        "amount": 500
       }
     ],
-    "currentDate": "1447/03/24",
-    "startDate": "1446/12/30"
+    "currentDate": "1447/06/07",
+    "startDate": "1447/06/07"
   },
   "archive": [
     {
-      "id": 1766756138058,
-      "name": "دورة 1447/06/07",
-      "startDate": "1447/06/07",
-      "endDate": "1447/06/07",
+      "id": 1766756531446,
+      "name": "دورة 1446/12/30",
+      "startDate": "1446/12/30",
+      "endDate": "1447/03/24",
       "events": [
         {
           "name": "حامد حميد الكشي",
+          "date": "1446/12/03",
+          "amount": 500,
+          "additionalAmount": 0,
+          "addedBy": ""
+        },
+        {
+          "name": "مسعد مبارك الكشي",
+          "date": "1446/12/04",
+          "amount": 500,
+          "additionalAmount": 0,
+          "addedBy": ""
+        },
+        {
+          "name": "ناصر حمدان الكشي",
+          "date": "1447/01/02",
+          "amount": 500,
+          "additionalAmount": 0,
+          "addedBy": ""
+        },
+        {
+          "name": "عواد مبروك الكشي",
+          "date": "1447/04/25",
+          "amount": 600,
+          "additionalAmount": 400,
+          "addedBy": "مسند"
+        },
+        {
+          "name": "عويضة محمد الكشي",
+          "date": "1447/05/22",
+          "amount": 500,
+          "additionalAmount": 0,
+          "addedBy": ""
+        },
+        {
+          "name": "نافل حميد الكشي",
           "date": "1447/06/07",
+          "amount": 400,
+          "additionalAmount": 0,
+          "addedBy": ""
+        },
+        {
+          "name": "صلاح حمدان الكشي",
+          "date": "1447/06/21",
           "amount": 500,
           "additionalAmount": 0,
           "addedBy": ""
         }
       ],
-      "specialEvents": [
-        {
-          "name": "سعد عواد الحربي",
-          "date": "1447/02/02",
-          "amount": 500
-        }
-      ],
+      "specialEvents": [],
       "payments": [
         {
           "name": "مسند",
+          "amount": 500
+        },
+        {
+          "name": "مازن",
+          "amount": 500
+        },
+        {
+          "name": "سعود",
+          "amount": 500
+        },
+        {
+          "name": "علي",
           "amount": 500
         },
         {
@@ -119,13 +115,17 @@
         {
           "name": "عبدالعزيز",
           "amount": 500
+        },
+        {
+          "name": "ابراهيم",
+          "amount": 500
         }
       ],
-      "totalEvents": 500,
-      "totalPayments": 1500,
-      "remaining": 1000,
+      "totalEvents": 3900,
+      "totalPayments": 3500,
+      "remaining": -400,
       "archivedDate": "٢٦ ديسمبر ٢٠٢٥"
     }
   ],
-  "lastUpdate": "٢٦ ديسمبر ٢٠٢٥ في ٠٤:٣٦ م"
+  "lastUpdate": "٢٦ ديسمبر ٢٠٢٥ في ٠٤:٤٢ م"
 }
