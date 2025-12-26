@@ -1184,13 +1184,7 @@
                 <label for="githubToken">GitHub Personal Access Token</label>
                 <input type="password" id="githubToken" placeholder="أدخل Token هنا">
                 <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 8px;">
-                    <p>لتوليد Token جديد:</p>
-                    <ol style="padding-right: 20px; margin-top: 5px;">
-                        <li>اذهب إلى GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)</li>
-                        <li>انقر على "Generate new token (classic)"</li>
-                        <li>اختر صلاحية <strong>repo</strong> (للمستودعات الخاصة) أو <strong>public_repo</strong> (للمستودعات العامة)</li>
-                        <li>انسخ الـ Token وأدخله هنا</li>
-                    </ol>
+                    
                 </div>
             </div>
             <div class="progress-container" id="progressContainer">
@@ -2341,17 +2335,7 @@
                 color: var(--text-secondary);
             `;
             instructions.innerHTML = `
-                <strong>تعليمات الحفظ اليدوي:</strong>
-                <ol style="padding-right: 20px; margin-top: 10px;">
-                    <li>انسخ النص أعلاه بالكامل (Ctrl+A ثم Ctrl+C)</li>
-                    <li>اذهب إلى مستودع GitHub الخاص بك</li>
-                    <li>افتح ملف data.json</li>
-                    <li>انقر على زر القلم (Edit) لأعلى اليمين</li>
-                    <li>استبدل المحتوى بالنص المنسوخ</li>
-                    <li>اكتب رسالة commit (مثل: "تحديث البيانات")</li>
-                    <li>انقر على Commit changes</li>
-                    <li>أغلق هذه النافذة</li>
-                </ol>
+
             `;
 
             const controls = document.createElement('div');
