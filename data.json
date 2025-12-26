@@ -3,13 +3,19 @@
     "events": [
       {
         "name": "حامد حميد الكشي",
-        "date": "1447 هـ/06‏/07‏",
+        "date": "1447/06/07",
         "amount": 500,
         "additionalAmount": 0,
         "addedBy": ""
       }
     ],
-    "specialEvents": [],
+    "specialEvents": [
+      {
+        "name": "سعد عواد الحربي",
+        "date": "1447/02/02",
+        "amount": 500
+      }
+    ],
     "payments": [
       {
         "name": "مسند",
@@ -25,7 +31,7 @@
       }
     ],
     "currentDate": "1447/06/07",
-    "startDate": "1447 هـ/06‏/07‏"
+    "startDate": "1447/06/07"
   },
   "archive": [
     {
@@ -121,5 +127,5 @@
       "archivedDate": "٢٦ ديسمبر ٢٠٢٥"
     }
   ],
-  "lastUpdate": "٢٦ ديسمبر ٢٠٢٥ في ٠٢:٢٣ م"
+  "lastUpdate": "٢٦ ديسمبر ٢٠٢٥ في ٠٢:٣١ م"
 }
