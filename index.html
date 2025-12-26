@@ -1677,7 +1677,7 @@
             }
 
             const specialTotal = window.appData.currentCycle.specialEvents.reduce((total, event) => 
-                total + (event.amount || 0), 0);
+                total + (parseInt(event.amount) || 0), 0);
             specialEventsTotalEl.textContent = specialTotal + ' ريال';
         }
 
@@ -1873,9 +1873,9 @@
 
         function calculateTotals() {
             const eventsTotal = window.appData.currentCycle.events.reduce((total, event) => 
-                total + (event.amount || 0) + (event.additionalAmount || 0), 0);
+                total + (parseInt(event.amount) || 0) + (parseInt(event.additionalAmount) || 0), 0);
             const paymentsTotal = window.appData.currentCycle.payments.reduce((total, payment) => 
-                total + (payment.amount || 0), 0);
+                total + (parseInt(payment.amount) || 0), 0);
             const remaining = paymentsTotal - eventsTotal;
 
             eventsTotalEl.textContent = eventsTotal + ' ريال';
@@ -1893,9 +1893,9 @@
             }
 
             const eventsTotal = window.appData.currentCycle.events.reduce((t, e) => 
-                t + (e.amount || 0) + (e.additionalAmount || 0), 0);
+                t + (parseInt(e.amount) || 0) + (parseInt(e.additionalAmount) || 0), 0);
             const paymentsTotal = window.appData.currentCycle.payments.reduce((t, p) => 
-                t + (p.amount || 0), 0);
+                t + (parseInt(p.amount) || 0), 0);
 
             const archiveEntry = {
                 id: Date.now(),
@@ -1933,7 +1933,7 @@
             showToast('تم الأرشفة والبدء بدورة جديدة', 'success');
         }
 
-        // دالة تحميل الدورة من الأرشيف للتعديل
+        // دالة تحميل الدورة من الأرشيف للتعديل - الإصدار المحسن
         function editArchiveCycle(index) {
             if (!isAdmin) {
                 showToast('يجب تسجيل الدخول كمسؤول', 'error');
@@ -1944,32 +1944,36 @@
                 return;
             }
 
-            // حفظ نسخة من الأرشيف الحالي
-            const originalArchive = [...window.appData.archive];
-            
             try {
-                // أرشفة البيانات الحالية إذا كانت موجودة
-                const currentEvents = window.appData.currentCycle.events;
-                const currentPayments = window.appData.currentCycle.payments;
-                const currentSpecialEvents = window.appData.currentCycle.specialEvents;
+                // الحصول على الدورة من الأرشيف
+                const archiveCycle = window.appData.archive[index];
                 
-                if (currentEvents.length > 0 || currentPayments.length > 0 || currentSpecialEvents.length > 0) {
-                    const eventsTotal = currentEvents.reduce((t, e) => 
-                        t + (e.amount || 0) + (e.additionalAmount || 0), 0);
-                    const paymentsTotal = currentPayments.reduce((t, p) => 
-                        t + (p.amount || 0), 0);
+                if (!archiveCycle) {
+                    throw new Error('الدورة غير موجودة في الأرشيف');
+                }
 
+                // نسخة من البيانات الحالية لأرشفتها
+                const currentCycleCopy = { ...window.appData.currentCycle };
+                
+                // أرشفة البيانات الحالية إذا كانت موجودة
+                const currentEventsTotal = currentCycleCopy.events.reduce((t, e) => 
+                    t + (parseInt(e.amount) || 0) + (parseInt(e.additionalAmount) || 0), 0);
+                const currentPaymentsTotal = currentCycleCopy.payments.reduce((t, p) => 
+                    t + (parseInt(p.amount) || 0), 0);
+
+                // فقط إذا كان هناك بيانات حالية
+                if (currentCycleCopy.events.length > 0 || currentCycleCopy.payments.length > 0 || currentCycleCopy.specialEvents.length > 0) {
                     const tempArchive = {
                         id: Date.now(),
-                        name: `دورة ${window.appData.currentCycle.startDate}`,
-                        startDate: window.appData.currentCycle.startDate,
-                        endDate: window.appData.currentCycle.currentDate,
-                        events: [...currentEvents],
-                        specialEvents: [...currentSpecialEvents],
-                        payments: [...currentPayments],
-                        totalEvents: eventsTotal,
-                        totalPayments: paymentsTotal,
-                        remaining: paymentsTotal - eventsTotal,
+                        name: `دورة ${currentCycleCopy.startDate}`,
+                        startDate: currentCycleCopy.startDate,
+                        endDate: currentCycleCopy.currentDate,
+                        events: [...currentCycleCopy.events],
+                        specialEvents: [...currentCycleCopy.specialEvents],
+                        payments: [...currentCycleCopy.payments],
+                        totalEvents: currentEventsTotal,
+                        totalPayments: currentPaymentsTotal,
+                        remaining: currentPaymentsTotal - currentEventsTotal,
                         archivedDate: new Date().toLocaleDateString('ar-SA', {
                             year: 'numeric',
                             month: 'long',
@@ -1977,20 +1981,11 @@
                         })
                     };
                     
-                    if (!window.appData.archive) {
-                        window.appData.archive = [];
-                    }
+                    // إضافة الأرشيف الجديد في البداية
                     window.appData.archive.unshift(tempArchive);
                 }
 
-                // الحصول على الدورة المؤرشفة
-                const archiveCycle = originalArchive[index];
-                
-                if (!archiveCycle) {
-                    throw new Error('الدورة غير موجودة في الأرشيف');
-                }
-                
-                // تحميل الدورة إلى البيانات الحالية
+                // تحميل الدورة المؤرشفة كبيانات حالية
                 window.appData.currentCycle = {
                     events: archiveCycle.events ? archiveCycle.events.map(event => ({
                         name: event.name || '',
@@ -2012,40 +2007,37 @@
                     startDate: formatHijriDate(archiveCycle.startDate || getHijriDate())
                 };
 
-                // إزالة الدورة من الأرشيف بعد تحميلها
-                window.appData.archive = window.appData.archive.filter((item, i) => {
-                    // احتفظ بجميع العناصر ما عدا التي تم تحميلها (من الأرشيف الأصلي)
-                    if (i === 0 && (currentEvents.length > 0 || currentPayments.length > 0 || currentSpecialEvents.length > 0)) {
-                        // هذه هي البيانات الأرشيفية الجديدة، احتفظ بها
-                        return true;
+                // إزالة الدورة القديمة من الأرشيف
+                // نبحث عن الفهرس الحقيقي بعد الإضافة
+                const realIndex = window.appData.archive.findIndex((item, i) => {
+                    // تخطي الأرشيف الجديد الذي أضفناه للتو
+                    if (i === 0 && (currentCycleCopy.events.length > 0 || currentCycleCopy.payments.length > 0 || currentCycleCopy.specialEvents.length > 0)) {
+                        return false;
                     }
-                    // تجاهل الدورة التي تم تحميلها
-                    return item.id !== archiveCycle.id;
+                    return item.id === archiveCycle.id;
                 });
+                
+                if (realIndex !== -1) {
+                    window.appData.archive.splice(realIndex, 1);
+                }
 
                 // تحديث الواجهة
-                renderData();
-                
-                // تحديث عرض التاريخ
                 dateDisplayEl.textContent = window.appData.currentCycle.currentDate;
-                
-                // عرض شارة وضع التعديل
+                renderData();
                 editModeBadge.style.display = 'flex';
                 
-                showToast('تم تحميل الدورة للتعديل بنجاح', 'success');
-                
-                // إغلاق نافذة الأرشيف بعد ثانية
+                // إغلاق نافذة الأرشيف بعد تأخير قصير
                 setTimeout(() => {
                     closeArchive();
-                    // التمركز على الجداول
-                    document.querySelector('.cards-container').scrollIntoView({ behavior: 'smooth' });
+                    // التمرير إلى الأعلى لعرض البيانات الجديدة
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 }, 500);
+                
+                showToast('تم تحميل الدورة للتعديل بنجاح', 'success');
                 
             } catch (error) {
                 console.error('خطأ في تحميل الدورة:', error);
                 showToast(`خطأ في تحميل الدورة: ${error.message}`, 'error');
-                // استعادة الأرشيف الأصلي في حالة الخطأ
-                window.appData.archive = originalArchive;
             }
         }
 
@@ -2117,7 +2109,6 @@
             document.body.insertAdjacentHTML('beforeend', archiveHTML);
         }
 
-        // دالة حذف الدورة من الأرشيف
         function deleteArchiveCycle(index) {
             if (!isAdmin) {
                 showToast('يجب تسجيل الدخول كمسؤول', 'error');
