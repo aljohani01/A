@@ -21,6 +21,34 @@
         "amount": 500,
         "additionalAmount": 0,
         "addedBy": ""
+      },
+      {
+        "name": "عواد مبروك الكشي",
+        "date": "1447/04/25",
+        "amount": 600,
+        "additionalAmount": 0,
+        "addedBy": ""
+      },
+      {
+        "name": "عويضة محمد الكشي",
+        "date": "1447/05/22",
+        "amount": 500,
+        "additionalAmount": 0,
+        "addedBy": ""
+      },
+      {
+        "name": "نافل حميد الكشي",
+        "date": "1447/06/07",
+        "amount": 400,
+        "additionalAmount": 0,
+        "addedBy": ""
+      },
+      {
+        "name": "صلاح حمدان الكشي",
+        "date": "1447/06/21",
+        "amount": 500,
+        "additionalAmount": 0,
+        "addedBy": ""
       }
     ],
     "specialEvents": [],
@@ -36,11 +64,27 @@
       {
         "name": "سعود",
         "amount": 500
+      },
+      {
+        "name": "علي",
+        "amount": 500
+      },
+      {
+        "name": "سعد",
+        "amount": 500
+      },
+      {
+        "name": "عبدالعزيز",
+        "amount": 500
+      },
+      {
+        "name": "ابراهيم",
+        "amount": 500
       }
     ],
     "currentDate": "1447/03/24",
-    "startDate": "1447/03/24"
+    "startDate": "1446/12/30"
   },
   "archive": [],
-  "lastUpdate": null
+  "lastUpdate": "١٣ ديسمبر ٢٠٢٥ في ١٢:١٥ م"
 }
