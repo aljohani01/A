@@ -1872,11 +1872,11 @@
         }
 
         function calculateTotals() {
-            // إصلاح: حساب المبلغ المضاف في المجموع
+            // إصلاح: حساب المبلغ فقط بدون إضافة (additionalAmount)
             const eventsTotal = window.appData.currentCycle.events.reduce((total, event) => {
                 const amount = parseInt(event.amount) || 0;
-                const additionalAmount = parseInt(event.additionalAmount) || 0;
-                return total + amount + additionalAmount;
+                // لا نحسب additionalAmount في المجموع
+                return total + amount;
             }, 0);
             
             const paymentsTotal = window.appData.currentCycle.payments.reduce((total, payment) => 
@@ -1898,11 +1898,11 @@
                 return;
             }
 
-            // إصلاح: حساب المبلغ المضاف في الأرشفة
+            // إصلاح: حساب المبلغ فقط بدون إضافة (additionalAmount) في الأرشيف
             const eventsTotal = window.appData.currentCycle.events.reduce((t, e) => {
                 const amount = parseInt(e.amount) || 0;
-                const additionalAmount = parseInt(e.additionalAmount) || 0;
-                return t + amount + additionalAmount;
+                // لا نحسب additionalAmount في الأرشيف
+                return t + amount;
             }, 0);
             
             const paymentsTotal = window.appData.currentCycle.payments.reduce((t, p) => 
@@ -1944,8 +1944,8 @@
             showToast('تم الأرشفة والبدء بدورة جديدة', 'success');
         }
 
-        // دالة تحميل الدورة من الأرشيف للتعديل مع التعديل المباشر في نافذة التفاصيل
-        function editArchiveCycle(index, fromDetails = false) {
+        // دالة تحميل الدورة من الأرشيف للتعديل
+        function editArchiveCycle(index) {
             if (!isAdmin) {
                 showToast('يجب تسجيل الدخول كمسؤول', 'error');
                 return;
@@ -1969,8 +1969,8 @@
                 // أرشفة البيانات الحالية إذا كانت موجودة
                 const currentEventsTotal = currentCycleCopy.events.reduce((t, e) => {
                     const amount = parseInt(e.amount) || 0;
-                    const additionalAmount = parseInt(e.additionalAmount) || 0;
-                    return t + amount + additionalAmount;
+                    // لا نحسب additionalAmount
+                    return t + amount;
                 }, 0);
                 
                 const currentPaymentsTotal = currentCycleCopy.payments.reduce((t, p) => 
@@ -2071,11 +2071,10 @@
             `;
 
             window.appData.archive.forEach((cycle, index) => {
-                // حساب المبلغ المضاف في المجموع المعروض
-                const eventsTotalWithAdditional = cycle.events ? cycle.events.reduce((total, event) => {
+                // حساب المبلغ بدون إضافة في المجموع المعروض
+                const eventsTotalWithoutAdditional = cycle.events ? cycle.events.reduce((total, event) => {
                     const amount = parseInt(event.amount) || 0;
-                    const additionalAmount = parseInt(event.additionalAmount) || 0;
-                    return total + amount + additionalAmount;
+                    return total + amount;
                 }, 0) : 0;
                 
                 archiveHTML += `
@@ -2091,7 +2090,7 @@
                         <div class="archive-stats">
                             <div class="stat-box">
                                 <div class="stat-label">المناسبات</div>
-                                <div class="stat-value">${eventsTotalWithAdditional}</div>
+                                <div class="stat-value">${eventsTotalWithoutAdditional}</div>
                             </div>
                             <div class="stat-box">
                                 <div class="stat-label">الدفعات</div>
@@ -2106,7 +2105,7 @@
                         </div>
                         <div class="action-buttons">
                             <button onclick="viewCycleDetails(${index})" class="btn btn-primary btn-sm">
-                                التفاصيل والتعديل
+                                التفاصيل
                             </button>
                             ${isAdmin ? `
                             <button onclick="editArchiveCycle(${index})" class="btn btn-warning btn-sm">
@@ -2148,15 +2147,20 @@
         window.viewCycleDetails = function(index) {
             const cycle = window.appData.archive[index];
             
-            // حساب المبلغ المضاف في المجموع
-            const eventsTotalWithAdditional = cycle.events ? cycle.events.reduce((total, event) => {
+            // حساب المبلغ بدون إضافة
+            const eventsTotalWithoutAdditional = cycle.events ? cycle.events.reduce((total, event) => {
                 const amount = parseInt(event.amount) || 0;
-                const additionalAmount = parseInt(event.additionalAmount) || 0;
-                return total + amount + additionalAmount;
+                return total + amount;
             }, 0) : 0;
             
-            // حساب المبلغ المتبقي مع المبلغ المضاف
-            const remainingWithAdditional = cycle.totalPayments - eventsTotalWithAdditional;
+            // حساب مجموع الإضافات فقط لعرضها كمعلومات
+            const totalAdditionalAmount = cycle.events ? cycle.events.reduce((total, event) => {
+                const additionalAmount = parseInt(event.additionalAmount) || 0;
+                return total + additionalAmount;
+            }, 0) : 0;
+            
+            // المبلغ المتبقي بدون حساب الإضافة
+            const remainingWithoutAdditional = cycle.totalPayments - eventsTotalWithoutAdditional;
             
             let detailsHTML = `
                 <div class="archive-modal">
@@ -2170,30 +2174,38 @@
                             <p style="margin-top: 6px;"><strong>الأرشفة:</strong> ${cycle.archivedDate}</p>
                             <div style="margin-top: 10px; display: flex; gap: 15px; flex-wrap: wrap;">
                                 <div style="flex: 1; min-width: 150px;">
-                                    <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">إجمالي المناسبات</p>
-                                    <p style="margin: 5px 0 0; font-size: 1.1rem; font-weight: bold;">${eventsTotalWithAdditional} ريال</p>
+                                    <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">إجمالي المناسبات (بدون إضافة)</p>
+                                    <p style="margin: 5px 0 0; font-size: 1.1rem; font-weight: bold;">${eventsTotalWithoutAdditional} ريال</p>
                                 </div>
                                 <div style="flex: 1; min-width: 150px;">
                                     <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">إجمالي الدفعات</p>
                                     <p style="margin: 5px 0 0; font-size: 1.1rem; font-weight: bold; color: var(--accent-green);">${cycle.totalPayments} ريال</p>
                                 </div>
                                 <div style="flex: 1; min-width: 150px;">
-                                    <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">المبلغ المتبقي</p>
-                                    <p style="margin: 5px 0 0; font-size: 1.1rem; font-weight: bold; color: ${remainingWithAdditional >= 0 ? 'var(--accent-green)' : 'var(--accent-red)'}">
-                                        ${remainingWithAdditional} ريال
+                                    <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">المبلغ المتبقي (بدون إضافة)</p>
+                                    <p style="margin: 5px 0 0; font-size: 1.1rem; font-weight: bold; color: ${remainingWithoutAdditional >= 0 ? 'var(--accent-green)' : 'var(--accent-red)'}">
+                                        ${remainingWithoutAdditional} ريال
                                     </p>
                                 </div>
                             </div>
+                            ${totalAdditionalAmount > 0 ? `
+                            <div style="margin-top: 10px; padding: 10px; background: rgba(59, 130, 246, 0.1); border-radius: 8px; border: 1px solid var(--accent-blue);">
+                                <p style="margin: 0; font-size: 0.85rem; color: var(--accent-blue);">
+                                    <strong>ملاحظة:</strong> إجمالي الإضافات في هذه الدورة: ${totalAdditionalAmount} ريال (لا تدخل في حساب المبلغ المتبقي)
+                                </p>
+                            </div>` : ''}
                         </div>
 
+                        ${isAdmin ? `
                         <div class="action-buttons" style="margin-bottom: 20px;">
-                            <button onclick="editArchiveCycleFromDetails(${index})" class="btn btn-warning" ${!isAdmin ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>
+                            <button onclick="editArchiveCycle(${index})" class="btn btn-warning">
                                 تحميل للتعديل في الجداول الرئيسية
                             </button>
                             <button onclick="closeArchive()" class="btn btn-outline">
                                 رجوع
                             </button>
                         </div>
+                        ` : ''}
 
                         <h3 style="margin: 20px 0 14px; color: var(--text-primary); font-size: 1.05rem;">
                             المناسبات (${cycle.events.length})
@@ -2205,7 +2217,7 @@
                                         <th>الاسم</th>
                                         <th>التاريخ</th>
                                         <th>المبلغ</th>
-                                        <th>إضافة</th>
+                                        <th>إضافة (غير محسوبة)</th>
                                         <th>من</th>
                                     </tr>
                                 </thead>
@@ -2215,14 +2227,13 @@
             cycle.events.forEach(event => {
                 const amount = parseInt(event.amount) || 0;
                 const additionalAmount = parseInt(event.additionalAmount) || 0;
-                const total = amount + additionalAmount;
                 
                 detailsHTML += `
                     <tr>
                         <td>${event.name}</td>
                         <td style="direction: ltr; text-align: center; font-family: monospace;">${formatHijriDate(event.date)}</td>
                         <td>${amount}</td>
-                        <td>${additionalAmount}</td>
+                        <td style="color: var(--text-muted);">${additionalAmount}</td>
                         <td>${event.addedBy || '-'}</td>
                     </tr>
                 `;
@@ -2232,12 +2243,10 @@
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <td colspan="3">الإجمالي (بدون إضافة)</td>
-                                        <td colspan="2">${cycle.totalEvents} ريال</td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="3">الإجمالي (مع الإضافة)</td>
-                                        <td colspan="2" style="font-weight: bold; color: var(--accent-blue);">${eventsTotalWithAdditional} ريال</td>
+                                        <td colspan="2">الإجمالي (بدون إضافة)</td>
+                                        <td>${eventsTotalWithoutAdditional} ريال</td>
+                                        <td style="color: var(--text-muted);">${totalAdditionalAmount} ريال</td>
+                                        <td></td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -2278,18 +2287,21 @@
                         </div>
 
                         <div style="background: var(--bg-secondary); padding: 20px; border-radius: 10px; margin-top: 20px; text-align: center; border: 1px solid var(--border-color);">
-                            <h3 style="color: ${remainingWithAdditional >= 0 ? 'var(--accent-green)' : 'var(--accent-red)'}; font-size: 1.2rem;">
-                                المبلغ المتبقي (مع حساب الإضافة): ${remainingWithAdditional} ريال
+                            <h3 style="color: ${remainingWithoutAdditional >= 0 ? 'var(--accent-green)' : 'var(--accent-red)'}; font-size: 1.2rem;">
+                                المبلغ المتبقي (بدون حساب الإضافة): ${remainingWithoutAdditional} ريال
                             </h3>
+                            ${totalAdditionalAmount > 0 ? `
                             <p style="color: var(--text-muted); margin-top: 8px; font-size: 0.9rem;">
-                                الإضافة المحسوبة: ${eventsTotalWithAdditional - cycle.totalEvents} ريال
-                            </p>
+                                إجمالي الإضافات غير المحسوبة: ${totalAdditionalAmount} ريال
+                            </p>` : ''}
                         </div>
 
                         <div class="action-buttons" style="margin-top: 20px;">
-                            <button onclick="editArchiveCycleFromDetails(${index})" class="btn btn-warning" ${!isAdmin ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>
+                            ${isAdmin ? `
+                            <button onclick="editArchiveCycle(${index})" class="btn btn-warning">
                                 تحميل للتعديل في الجداول الرئيسية
                             </button>
+                            ` : ''}
                             <button onclick="closeArchive()" class="btn btn-primary">
                                 رجوع إلى الأرشيف
                             </button>
@@ -2300,15 +2312,6 @@
 
             closeArchive();
             document.body.insertAdjacentHTML('beforeend', detailsHTML);
-        };
-
-        // دالة خاصة للتحميل من نافذة التفاصيل
-        window.editArchiveCycleFromDetails = function(index) {
-            if (!isAdmin) {
-                showToast('يجب تسجيل الدخول كمسؤول', 'error');
-                return;
-            }
-            editArchiveCycle(index, true);
         };
 
         window.closeArchive = function() {
