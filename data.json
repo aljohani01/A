@@ -7,6 +7,13 @@
         "amount": 500,
         "additionalAmount": 500,
         "addedBy": "سعد"
+      },
+      {
+        "name": "سعيد دخيل الله الكشي",
+        "date": "1447 هـ/13‏/07‏",
+        "amount": 500,
+        "additionalAmount": 500,
+        "addedBy": "عبدالعزيز"
       }
     ],
     "specialEvents": [
@@ -131,5 +138,5 @@
       "archivedDate": "٢٦ ديسمبر ٢٠٢٥"
     }
   ],
-  "lastUpdate": "٢٨ ديسمبر ٢٠٢٥ في ٠٨:٤٨ م"
+  "lastUpdate": "٢ يناير ٢٠٢٦ في ١١:٣٩ م"
 }
