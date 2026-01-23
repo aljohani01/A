@@ -10,10 +10,24 @@
       },
       {
         "name": "سعيد دخيل الله الكشي",
-        "date": "1447 هـ/13‏/07‏",
+        "date": "1447/13/07",
         "amount": 500,
         "additionalAmount": 500,
         "addedBy": "عبدالعزيز"
+      },
+      {
+        "name": "عبدالعزيز سند",
+        "date": "1447/03/08",
+        "amount": 300,
+        "additionalAmount": 0,
+        "addedBy": ""
+      },
+      {
+        "name": "سعد بركه",
+        "date": "1447/04/08",
+        "amount": 300,
+        "additionalAmount": 0,
+        "addedBy": ""
       }
     ],
     "specialEvents": [
@@ -138,5 +152,5 @@
       "archivedDate": "٢٦ ديسمبر ٢٠٢٥"
     }
   ],
-  "lastUpdate": "٢ يناير ٢٠٢٦ في ١١:٣٩ م"
+  "lastUpdate": "٢٣ يناير ٢٠٢٦ في ٠٩:٢٥ م"
 }
