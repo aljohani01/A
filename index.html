@@ -605,7 +605,6 @@
             border: 1px solid var(--border-color);
             display: inline-block;
             transition: var(--transition);
-            direction: ltr;
             unicode-bidi: embed;
             text-align: center;
             min-width: 120px;
@@ -628,7 +627,6 @@
             font-weight: 600;
             background: var(--bg-secondary);
             color: var(--text-primary);
-            direction: ltr;
             font-family: monospace;
         }
 
@@ -1285,10 +1283,8 @@
             return result;
         }
 
-        // تم إصلاح دالة جلب التاريخ الهجري لحل مشكلة ترتيب التاريخ في المتصفحات المختلفة
         function getHijriDate() {
             const today = new Date();
-            // استخدام en-US-u-ca-islamic-nu-latn لضمان الحصول على الأرقام الإنجليزية وتنسيق ثابت دائماً
             const formatter = new Intl.DateTimeFormat('en-US-u-ca-islamic-nu-latn', {
                 year: 'numeric',
                 month: '2-digit',
@@ -1300,18 +1296,19 @@
             let month = parts.find(p => p.type === 'month')?.value || '';
             let day = parts.find(p => p.type === 'day')?.value || '';
 
-            // إزالة أي نصوص زائدة قد يضيفها المتصفح مثل "AH" وضمان إضافة الصفر للأرقام الفردية
             year = year.replace(/\D/g, '');
             month = month.replace(/\D/g, '').padStart(2, '0');
             day = day.replace(/\D/g, '').padStart(2, '0');
 
-            return `${year}/${month}/${day}`;
+            // إضافة حرف الـ "هـ" للنتيجة النهائية
+            return `${year}/${month}/${day} هـ`;
         }
 
         function formatHijriDate(date) {
             if (!date || date.toString().trim() === '') return getHijriDate();
             
             let dateStr = toEnglishNumerals(date.toString());
+            // نقوم بإزالة أي حرف "هـ" موجود مسبقاً لتنظيف وإعادة تنسيق النص
             dateStr = dateStr.replace(/[هـ\s\u0600-\u06FF]/g, '');
             dateStr = dateStr.replace(/[^\d\/]/g, '');
             dateStr = dateStr.replace(/\/+/g, '/').replace(/^\//, '').replace(/\/$/, '');
@@ -1326,19 +1323,19 @@
                         const year = cleanParts[0].padStart(4, '0');
                         const month = cleanParts[1].padStart(2, '0');
                         const day = cleanParts[2].padStart(2, '0');
-                        return `${year}/${month}/${day}`;
+                        return `${year}/${month}/${day} هـ`;
                     } else if (cleanParts[2].length === 4 && cleanParts[0].length <= 2 && cleanParts[1].length <= 2) {
                         const year = cleanParts[2].padStart(4, '0');
                         const month = cleanParts[1].padStart(2, '0');
                         const day = cleanParts[0].padStart(2, '0');
-                        return `${year}/${month}/${day}`;
+                        return `${year}/${month}/${day} هـ`;
                     }
                 }
             }
             
             const numbersOnly = dateStr.replace(/\D/g, '');
             if (numbersOnly.length === 8) {
-                return `${numbersOnly.slice(0,4)}/${numbersOnly.slice(4,6)}/${numbersOnly.slice(6,8)}`;
+                return `${numbersOnly.slice(0,4)}/${numbersOnly.slice(4,6)}/${numbersOnly.slice(6,8)} هـ`;
             }
             
             return getHijriDate();
@@ -1346,6 +1343,7 @@
 
         function validateHijriDate(dateStr) {
             dateStr = toEnglishNumerals(dateStr);
+            // إزالة حرف "هـ" أثناء التحقق من صحة الأرقام
             dateStr = dateStr.replace(/[هـ\s\u0600-\u06FF]/g, '');
             const cleanStr = dateStr.replace(/[^\d\/]/g, '');
             
@@ -1515,7 +1513,7 @@
                 input.type = 'text';
                 input.value = currentDate;
                 input.className = 'date-input';
-                input.placeholder = 'YYYY/MM/DD';
+                input.placeholder = 'YYYY/MM/DD هـ';
                 dateDisplayEl.replaceWith(input);
                 input.focus();
                 input.select();
@@ -1618,7 +1616,7 @@
                         ${isAdmin ? 'contenteditable="true"' : ''} 
                         data-field="date" 
                         data-index="${index}" 
-                        style="direction: ltr; text-align: center; font-family: monospace;">${event.date}</td>
+                        style="text-align: center; font-family: monospace;">${event.date}</td>
                     <td class="${isAdmin ? 'editable' : ''}" 
                         ${isAdmin ? 'contenteditable="true"' : ''} 
                         data-field="amount" 
@@ -1666,7 +1664,7 @@
                         ${isAdmin ? 'contenteditable="true"' : ''} 
                         data-field="date" 
                         data-index="${index}" 
-                        style="direction: ltr; text-align: center; font-family: monospace;">${event.date}</td>
+                        style="text-align: center; font-family: monospace;">${event.date}</td>
                     <td class="${isAdmin ? 'editable' : ''}" 
                         ${isAdmin ? 'contenteditable="true"' : ''} 
                         data-field="amount" 
@@ -2071,7 +2069,7 @@
                         <h3>
                             ${cycle.name}
                         </h3>
-                        <p style="color: var(--text-secondary); margin-bottom: 14px; font-size: 0.875rem; direction: ltr; text-align: right;">
+                        <p style="color: var(--text-secondary); margin-bottom: 14px; font-size: 0.875rem; text-align: right;">
                             من ${formatHijriDate(cycle.startDate)} إلى ${formatHijriDate(cycle.endDate)}
                             <br>
                             <small>تاريخ الأرشفة: ${cycle.archivedDate}</small>
@@ -2155,7 +2153,7 @@
                             ${cycle.name}
                         </h2>
                         
-                        <div style="background: var(--bg-secondary); padding: 16px; border-radius: 10px; margin-bottom: 20px; font-size: 0.875rem; border: 1px solid var(--border-color); direction: ltr; text-align: right;">
+                        <div style="background: var(--bg-secondary); padding: 16px; border-radius: 10px; margin-bottom: 20px; font-size: 0.875rem; border: 1px solid var(--border-color); text-align: right;">
                             <p><strong>الفترة:</strong> ${formatHijriDate(cycle.startDate)} - ${formatHijriDate(cycle.endDate)}</p>
                             <p style="margin-top: 6px;"><strong>الأرشفة:</strong> ${cycle.archivedDate}</p>
                             <div style="margin-top: 10px; display: flex; gap: 15px; flex-wrap: wrap;">
@@ -2217,7 +2215,7 @@
                 detailsHTML += `
                     <tr>
                         <td>${event.name}</td>
-                        <td style="direction: ltr; text-align: center; font-family: monospace;">${formatHijriDate(event.date)}</td>
+                        <td style="text-align: center; font-family: monospace;">${formatHijriDate(event.date)}</td>
                         <td>${amount}</td>
                         <td style="color: var(--text-muted);">${additionalAmount}</td>
                         <td>${event.addedBy || '-'}</td>
