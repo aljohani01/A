@@ -3,35 +3,35 @@
     "events": [
       {
         "name": "حامد حميد الكشي",
-        "date": "1447/06/07",
+        "date": "1447/07/06 هـ",
         "amount": 500,
         "additionalAmount": 500,
         "addedBy": "سعد"
       },
       {
         "name": "سعيد دخيل الله الكشي",
-        "date": "1447/13/07",
+        "date": "1447/07/13 هـ",
         "amount": 500,
         "additionalAmount": 500,
         "addedBy": "عبدالعزيز"
       },
       {
         "name": "عبدالعزيز سند",
-        "date": "1447/03/08",
+        "date": "1447/08/03 هـ",
         "amount": 300,
         "additionalAmount": 0,
         "addedBy": ""
       },
       {
         "name": "سعد بركه",
-        "date": "1447/04/08",
+        "date": "1447/08/04 هـ",
         "amount": 300,
         "additionalAmount": 0,
         "addedBy": ""
       },
       {
         "name": "سالم سليم محمد الكشي",
-        "date": "1447/02/10",
+        "date": "1447/10/23 هـ",
         "amount": 300,
         "additionalAmount": 0,
         "addedBy": ""
@@ -40,7 +40,7 @@
     "specialEvents": [
       {
         "name": "سعد عواد الحربي",
-        "date": "1447/02/02",
+        "date": "1447/02/02 هـ",
         "amount": 500
       }
     ],
@@ -62,8 +62,8 @@
         "amount": 500
       }
     ],
-    "currentDate": "1447/06/07",
-    "startDate": "1447/06/07"
+    "currentDate": "1447/07/06 هـ",
+    "startDate": "1447/06/07 هـ"
   },
   "archive": [
     {
@@ -159,5 +159,5 @@
       "archivedDate": "٢٦ ديسمبر ٢٠٢٥"
     }
   ],
-  "lastUpdate": "١٠ أبريل ٢٠٢٦ في ٠٦:٣٧ م"
+  "lastUpdate": "١٠ أبريل ٢٠٢٦ في ٠٧:٤٧ م"
 }
