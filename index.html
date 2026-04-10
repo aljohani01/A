@@ -605,7 +605,6 @@
             border: 1px solid var(--border-color);
             display: inline-block;
             transition: var(--transition);
-            unicode-bidi: embed;
             text-align: center;
             min-width: 120px;
             font-family: monospace;
@@ -1300,7 +1299,7 @@
             month = month.replace(/\D/g, '').padStart(2, '0');
             day = day.replace(/\D/g, '').padStart(2, '0');
 
-            // إضافة حرف الـ "هـ" للنتيجة النهائية
+            // ترتيب صريح: السنة ثم الشهر ثم اليوم
             return `${year}/${month}/${day} هـ`;
         }
 
@@ -1335,7 +1334,10 @@
             
             const numbersOnly = dateStr.replace(/\D/g, '');
             if (numbersOnly.length === 8) {
-                return `${numbersOnly.slice(0,4)}/${numbersOnly.slice(4,6)}/${numbersOnly.slice(6,8)} هـ`;
+                // افتراض أن التنسيق هو YYYYMMDD
+                if (numbersOnly.startsWith('14') || numbersOnly.startsWith('15')) {
+                    return `${numbersOnly.slice(0,4)}/${numbersOnly.slice(4,6)}/${numbersOnly.slice(6,8)} هـ`;
+                }
             }
             
             return getHijriDate();
@@ -1511,9 +1513,9 @@
                 
                 const input = document.createElement('input');
                 input.type = 'text';
-                input.value = currentDate;
+                input.value = currentDate.replace(' هـ', '');
                 input.className = 'date-input';
-                input.placeholder = 'YYYY/MM/DD هـ';
+                input.placeholder = 'YYYY/MM/DD';
                 dateDisplayEl.replaceWith(input);
                 input.focus();
                 input.select();
@@ -1743,10 +1745,10 @@
                             if (validateHijriDate(value)) {
                                 const formattedDate = formatHijriDate(value);
                                 window.appData.currentCycle.events[index][field] = formattedDate;
-                                this.textContent = formattedDate;
+                                // تحديث المحتوى بدون إعادة تركيز لتجنب مشاكل المؤشر
                             } else {
-                                this.textContent = window.appData.currentCycle.events[index][field];
-                                showToast('تاريخ غير صحيح. استخدم تنسيق: YYYY/MM/DD', 'error');
+                                // لا نقوم بإظهار خطأ فوراً أثناء الكتابة للسماح للمستخدم بإكمال التاريخ
+                                window.appData.currentCycle.events[index][field] = value;
                             }
                         } else {
                             window.appData.currentCycle.events[index][field] = value;
@@ -1760,10 +1762,8 @@
                             if (validateHijriDate(value)) {
                                 const formattedDate = formatHijriDate(value);
                                 window.appData.currentCycle.specialEvents[index][field] = formattedDate;
-                                this.textContent = formattedDate;
                             } else {
-                                this.textContent = window.appData.currentCycle.specialEvents[index][field];
-                                showToast('تاريخ غير صحيح. استخدم تنسيق: YYYY/MM/DD', 'error');
+                                window.appData.currentCycle.specialEvents[index][field] = value;
                             }
                         } else {
                             window.appData.currentCycle.specialEvents[index][field] = value;
@@ -1779,9 +1779,33 @@
                     }
 
                     if (type === 'specialEvent') {
-                        renderSpecialEvents();
+                        // لا نعيد بناء الجدول أثناء الكتابة
+                        const specialTotal = window.appData.currentCycle.specialEvents.reduce((total, event) => 
+                            total + (parseInt(event.amount) || 0), 0);
+                        specialEventsTotalEl.textContent = specialTotal + ' ريال';
                     } else {
                         calculateTotals();
+                    }
+                });
+
+                // التحقق النهائي وتنسيق التاريخ عند فقدان التركيز
+                cell.addEventListener('blur', function() {
+                    const index = this.getAttribute('data-index');
+                    const field = this.getAttribute('data-field');
+                    
+                    if (field === 'date') {
+                        let value = this.textContent.trim();
+                        if (validateHijriDate(value)) {
+                            const formattedDate = formatHijriDate(value);
+                            if (type === 'event') {
+                                window.appData.currentCycle.events[index][field] = formattedDate;
+                            } else if (type === 'specialEvent') {
+                                window.appData.currentCycle.specialEvents[index][field] = formattedDate;
+                            }
+                            this.textContent = formattedDate;
+                        } else {
+                            showToast('تاريخ غير صحيح. استخدم تنسيق: YYYY/MM/DD', 'error');
+                        }
                     }
                 });
             });
