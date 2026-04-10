@@ -1285,19 +1285,27 @@
             return result;
         }
 
+        // تم إصلاح دالة جلب التاريخ الهجري لحل مشكلة ترتيب التاريخ في المتصفحات المختلفة
         function getHijriDate() {
             const today = new Date();
-            const hijriDate = today.toLocaleDateString('ar-SA-u-ca-islamic', {
+            // استخدام en-US-u-ca-islamic-nu-latn لضمان الحصول على الأرقام الإنجليزية وتنسيق ثابت دائماً
+            const formatter = new Intl.DateTimeFormat('en-US-u-ca-islamic-nu-latn', {
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit'
             });
+            const parts = formatter.formatToParts(today);
             
-            const year = toEnglishNumerals(hijriDate.split('/')[2]);
-            const month = toEnglishNumerals(hijriDate.split('/')[0]);
-            const day = toEnglishNumerals(hijriDate.split('/')[1]);
-            
-            return `${year}/${month.padStart(2, '0')}/${day.padStart(2, '0')}`;
+            let year = parts.find(p => p.type === 'year')?.value || '';
+            let month = parts.find(p => p.type === 'month')?.value || '';
+            let day = parts.find(p => p.type === 'day')?.value || '';
+
+            // إزالة أي نصوص زائدة قد يضيفها المتصفح مثل "AH" وضمان إضافة الصفر للأرقام الفردية
+            year = year.replace(/\D/g, '');
+            month = month.replace(/\D/g, '').padStart(2, '0');
+            day = day.replace(/\D/g, '').padStart(2, '0');
+
+            return `${year}/${month}/${day}`;
         }
 
         function formatHijriDate(date) {
@@ -1872,10 +1880,8 @@
         }
 
         function calculateTotals() {
-            // إصلاح: حساب المبلغ فقط بدون إضافة (additionalAmount)
             const eventsTotal = window.appData.currentCycle.events.reduce((total, event) => {
                 const amount = parseInt(event.amount) || 0;
-                // لا نحسب additionalAmount في المجموع
                 return total + amount;
             }, 0);
             
@@ -1898,10 +1904,8 @@
                 return;
             }
 
-            // إصلاح: حساب المبلغ فقط بدون إضافة (additionalAmount) في الأرشيف
             const eventsTotal = window.appData.currentCycle.events.reduce((t, e) => {
                 const amount = parseInt(e.amount) || 0;
-                // لا نحسب additionalAmount في الأرشيف
                 return t + amount;
             }, 0);
             
@@ -1944,7 +1948,6 @@
             showToast('تم الأرشفة والبدء بدورة جديدة', 'success');
         }
 
-        // دالة تحميل الدورة من الأرشيف للتعديل
         function editArchiveCycle(index) {
             if (!isAdmin) {
                 showToast('يجب تسجيل الدخول كمسؤول', 'error');
@@ -1956,27 +1959,22 @@
             }
 
             try {
-                // الحصول على الدورة من الأرشيف
                 const archiveCycle = window.appData.archive[index];
                 
                 if (!archiveCycle) {
                     throw new Error('الدورة غير موجودة في الأرشيف');
                 }
 
-                // نسخة من البيانات الحالية لأرشفتها
                 const currentCycleCopy = { ...window.appData.currentCycle };
                 
-                // أرشفة البيانات الحالية إذا كانت موجودة
                 const currentEventsTotal = currentCycleCopy.events.reduce((t, e) => {
                     const amount = parseInt(e.amount) || 0;
-                    // لا نحسب additionalAmount
                     return t + amount;
                 }, 0);
                 
                 const currentPaymentsTotal = currentCycleCopy.payments.reduce((t, p) => 
                     t + (parseInt(p.amount) || 0), 0);
 
-                // فقط إذا كان هناك بيانات حالية
                 if (currentCycleCopy.events.length > 0 || currentCycleCopy.payments.length > 0 || currentCycleCopy.specialEvents.length > 0) {
                     const tempArchive = {
                         id: Date.now(),
@@ -1996,11 +1994,9 @@
                         })
                     };
                     
-                    // إضافة الأرشيف الجديد في البداية
                     window.appData.archive.unshift(tempArchive);
                 }
 
-                // تحميل الدورة المؤرشفة كبيانات حالية
                 window.appData.currentCycle = {
                     events: archiveCycle.events ? archiveCycle.events.map(event => ({
                         name: event.name || '',
@@ -2022,10 +2018,7 @@
                     startDate: formatHijriDate(archiveCycle.startDate || getHijriDate())
                 };
 
-                // إزالة الدورة القديمة من الأرشيف
-                // نبحث عن الفهرس الحقيقي بعد الإضافة
                 const realIndex = window.appData.archive.findIndex((item, i) => {
-                    // تخطي الأرشيف الجديد الذي أضفناه للتو
                     if (i === 0 && (currentCycleCopy.events.length > 0 || currentCycleCopy.payments.length > 0 || currentCycleCopy.specialEvents.length > 0)) {
                         return false;
                     }
@@ -2036,15 +2029,12 @@
                     window.appData.archive.splice(realIndex, 1);
                 }
 
-                // تحديث الواجهة
                 dateDisplayEl.textContent = window.appData.currentCycle.currentDate;
                 renderData();
                 editModeBadge.style.display = 'flex';
                 
-                // إغلاق نافذة الأرشيف بعد تأخير قصير
                 setTimeout(() => {
                     closeArchive();
-                    // التمرير إلى الأعلى لعرض البيانات الجديدة
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 }, 500);
                 
@@ -2071,7 +2061,6 @@
             `;
 
             window.appData.archive.forEach((cycle, index) => {
-                // حساب المبلغ بدون إضافة في المجموع المعروض
                 const eventsTotalWithoutAdditional = cycle.events ? cycle.events.reduce((total, event) => {
                     const amount = parseInt(event.amount) || 0;
                     return total + amount;
@@ -2147,19 +2136,16 @@
         window.viewCycleDetails = function(index) {
             const cycle = window.appData.archive[index];
             
-            // حساب المبلغ بدون إضافة
             const eventsTotalWithoutAdditional = cycle.events ? cycle.events.reduce((total, event) => {
                 const amount = parseInt(event.amount) || 0;
                 return total + amount;
             }, 0) : 0;
             
-            // حساب مجموع الإضافات فقط لعرضها كمعلومات
             const totalAdditionalAmount = cycle.events ? cycle.events.reduce((total, event) => {
                 const additionalAmount = parseInt(event.additionalAmount) || 0;
                 return total + additionalAmount;
             }, 0) : 0;
             
-            // المبلغ المتبقي بدون حساب الإضافة
             const remainingWithoutAdditional = cycle.totalPayments - eventsTotalWithoutAdditional;
             
             let detailsHTML = `
@@ -2324,7 +2310,6 @@
             }
         };
 
-        // جعل الدوال متاحة عالمياً
         window.editArchiveCycle = editArchiveCycle;
         window.deleteArchiveCycle = deleteArchiveCycle;
 
@@ -2349,7 +2334,6 @@
             updateProgress(10);
 
             try {
-                // جلب معلومات الملف الحالي
                 updateProgress(30);
                 let sha = null;
                 
@@ -2370,7 +2354,6 @@
 
                 updateProgress(60);
 
-                // تحضير البيانات
                 const dataStr = JSON.stringify(window.appData, null, 2);
                 const base64Data = btoa(unescape(encodeURIComponent(dataStr)));
 
@@ -2389,7 +2372,6 @@
 
                 updateProgress(80);
 
-                // رفع البيانات
                 const updateResponse = await fetch(GITHUB_API_URL, {
                     method: 'PUT',
                     headers: {
@@ -2428,7 +2410,6 @@
                     editingArchiveIndex = null;
                     githubTokenInput.value = '';
                     
-                    // إعادة تحميل البيانات
                     setTimeout(() => {
                         loadDataFromGitHub().then(() => {
                             renderData();
