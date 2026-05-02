@@ -35,6 +35,13 @@
         "amount": 300,
         "additionalAmount": 0,
         "addedBy": ""
+      },
+      {
+        "name": "عوده حماد الكشي",
+        "date": "1447/10/28 هـ",
+        "amount": 500,
+        "additionalAmount": 0,
+        "addedBy": ""
       }
     ],
     "specialEvents": [
@@ -59,6 +66,10 @@
       },
       {
         "name": "ابراهيم",
+        "amount": 500
+      },
+      {
+        "name": "سعود",
         "amount": 500
       }
     ],
@@ -159,5 +170,5 @@
       "archivedDate": "٢٦ ديسمبر ٢٠٢٥"
     }
   ],
-  "lastUpdate": "١٠ أبريل ٢٠٢٦ في ٠٧:٤٧ م"
+  "lastUpdate": "٢ مايو ٢٠٢٦ في ١٠:٤٩ ص"
 }
