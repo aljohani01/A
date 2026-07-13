@@ -2,62 +2,25 @@
   "currentCycle": {
     "events": [
       {
-        "name": "حامد حميد الكشي",
-        "date": "1447/07/06 هـ",
-        "amount": 500,
-        "additionalAmount": 500,
-        "addedBy": "سعد"
-      },
-      {
-        "name": "سعيد دخيل الله الكشي",
-        "date": "1447/07/13 هـ",
-        "amount": 500,
-        "additionalAmount": 500,
-        "addedBy": "عبدالعزيز"
-      },
-      {
-        "name": "عبدالعزيز سند",
-        "date": "1447/08/03 هـ",
-        "amount": 300,
-        "additionalAmount": 0,
-        "addedBy": ""
-      },
-      {
-        "name": "سعد بركه",
-        "date": "1447/08/04 هـ",
-        "amount": 300,
-        "additionalAmount": 0,
-        "addedBy": ""
-      },
-      {
-        "name": "سالم سليم محمد الكشي",
-        "date": "1447/10/23 هـ",
-        "amount": 300,
-        "additionalAmount": 0,
-        "addedBy": ""
-      },
-      {
-        "name": "عوده حماد الكشي",
-        "date": "1447/10/28 هـ",
+        "name": "مسلم سعد الكشي",
+        "date": "1448/01/22 هـ",
         "amount": 500,
         "additionalAmount": 0,
         "addedBy": ""
       }
     ],
-    "specialEvents": [
-      {
-        "name": "سعد عواد الحربي",
-        "date": "1447/02/02 هـ",
-        "amount": 500
-      }
-    ],
+    "specialEvents": [],
     "payments": [
       {
-        "name": "مسند",
+        "name": "سعد",
         "amount": 500
       },
       {
-        "name": "سعد",
+        "name": "علي",
+        "amount": 500
+      },
+      {
+        "name": "فيصل",
         "amount": 500
       },
       {
@@ -65,18 +28,101 @@
         "amount": 500
       },
       {
-        "name": "ابراهيم",
+        "name": "مسند",
         "amount": 500
       },
       {
-        "name": "سعود",
+        "name": "مسند",
         "amount": 500
       }
     ],
-    "currentDate": "1447/07/06 هـ",
-    "startDate": "1447/06/07 هـ"
+    "currentDate": "1448/01/28 هـ",
+    "startDate": "1448/01/28 هـ"
   },
   "archive": [
+    {
+      "id": 1783974765451,
+      "name": "دورة 1447/06/07 هـ",
+      "startDate": "1447/06/07 هـ",
+      "endDate": "1447/07/06 هـ",
+      "events": [
+        {
+          "name": "حامد حميد الكشي",
+          "date": "1447/07/06 هـ",
+          "amount": 500,
+          "additionalAmount": 500,
+          "addedBy": "سعد"
+        },
+        {
+          "name": "سعيد دخيل الله الكشي",
+          "date": "1447/07/13 هـ",
+          "amount": 500,
+          "additionalAmount": 500,
+          "addedBy": "عبدالعزيز"
+        },
+        {
+          "name": "عبدالعزيز سند",
+          "date": "1447/08/03 هـ",
+          "amount": 300,
+          "additionalAmount": 0,
+          "addedBy": ""
+        },
+        {
+          "name": "سعد بركه",
+          "date": "1447/08/04 هـ",
+          "amount": 300,
+          "additionalAmount": 0,
+          "addedBy": ""
+        },
+        {
+          "name": "سالم سليم محمد الكشي",
+          "date": "1447/10/23 هـ",
+          "amount": 300,
+          "additionalAmount": 0,
+          "addedBy": ""
+        },
+        {
+          "name": "عوده حماد الكشي",
+          "date": "1447/10/28 هـ",
+          "amount": 500,
+          "additionalAmount": 0,
+          "addedBy": ""
+        }
+      ],
+      "specialEvents": [
+        {
+          "name": "سعد عواد الحربي",
+          "date": "1447/02/02 هـ",
+          "amount": 500
+        }
+      ],
+      "payments": [
+        {
+          "name": "مسند",
+          "amount": 500
+        },
+        {
+          "name": "سعد",
+          "amount": 500
+        },
+        {
+          "name": "عبدالعزيز",
+          "amount": 500
+        },
+        {
+          "name": "ابراهيم",
+          "amount": 500
+        },
+        {
+          "name": "سعود",
+          "amount": 500
+        }
+      ],
+      "totalEvents": 2400,
+      "totalPayments": 2500,
+      "remaining": 100,
+      "archivedDate": "١٣ يوليو ٢٠٢٦"
+    },
     {
       "id": 1766776778638,
       "name": "دورة 1446/12/30",
@@ -170,5 +216,5 @@
       "archivedDate": "٢٦ ديسمبر ٢٠٢٥"
     }
   ],
-  "lastUpdate": "٢ مايو ٢٠٢٦ في ١٠:٤٩ ص"
+  "lastUpdate": "١٣ يوليو ٢٠٢٦ في ١١:٣٥ م"
 }
