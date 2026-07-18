@@ -7,6 +7,13 @@
         "amount": 500,
         "additionalAmount": 0,
         "addedBy": ""
+      },
+      {
+        "name": "؟",
+        "date": "1448/01/29 هـ",
+        "amount": 300,
+        "additionalAmount": 0,
+        "addedBy": ""
       }
     ],
     "specialEvents": [],
@@ -38,6 +45,14 @@
       {
         "name": "متبقي",
         "amount": 100
+      },
+      {
+        "name": "خالد سالم",
+        "amount": 500
+      },
+      {
+        "name": "ابراهيم",
+        "amount": 500
       }
     ],
     "currentDate": "1448/01/28 هـ",
@@ -220,5 +235,5 @@
       "archivedDate": "٢٦ ديسمبر ٢٠٢٥"
     }
   ],
-  "lastUpdate": "١٣ يوليو ٢٠٢٦ في ١١:٤٤ م"
+  "lastUpdate": "١٨ يوليو ٢٠٢٦ في ١١:١٦ ص"
 }
