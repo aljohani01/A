@@ -9,9 +9,16 @@
         "addedBy": ""
       },
       {
-        "name": "؟",
+        "name": "ابناء عوض محمد الكشي",
         "date": "1448/01/29 هـ",
         "amount": 300,
+        "additionalAmount": 0,
+        "addedBy": ""
+      },
+      {
+        "name": "عوده حماد الكشي",
+        "date": "1447/10/28 هـ",
+        "amount": 500,
         "additionalAmount": 0,
         "addedBy": ""
       }
@@ -39,7 +46,7 @@
         "amount": 500
       },
       {
-        "name": "مسند",
+        "name": "خالد مسند",
         "amount": 500
       },
       {
@@ -52,6 +59,10 @@
       },
       {
         "name": "ابراهيم",
+        "amount": 500
+      },
+      {
+        "name": "مازن",
         "amount": 500
       }
     ],
@@ -235,5 +246,5 @@
       "archivedDate": "٢٦ ديسمبر ٢٠٢٥"
     }
   ],
-  "lastUpdate": "١٨ يوليو ٢٠٢٦ في ١١:١٦ ص"
+  "lastUpdate": "٢٩ يوليو ٢٠٢٦ في ٠٩:٤٧ ص"
 }
