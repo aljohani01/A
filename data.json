@@ -21,6 +21,20 @@
         "amount": 500,
         "additionalAmount": 0,
         "addedBy": ""
+      },
+      {
+        "name": "ريان عوده سلامة الكشي",
+        "date": "1448/02/15 هـ",
+        "amount": 300,
+        "additionalAmount": 0,
+        "addedBy": ""
+      },
+      {
+        "name": "ابناء محمد حميد الكشي",
+        "date": "1448/02/25 هـ",
+        "amount": 500,
+        "additionalAmount": 0,
+        "addedBy": ""
       }
     ],
     "specialEvents": [],
@@ -246,5 +260,5 @@
       "archivedDate": "٢٦ ديسمبر ٢٠٢٥"
     }
   ],
-  "lastUpdate": "٢٩ يوليو ٢٠٢٦ في ٠٩:٤٧ ص"
+  "lastUpdate": "٩ أغسطس ٢٠٢٦ في ١٠:٢٧ ص"
 }
