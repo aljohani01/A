@@ -35,6 +35,13 @@
         "amount": 500,
         "additionalAmount": 0,
         "addedBy": ""
+      },
+      {
+        "name": "محمد حمد الكشي",
+        "date": "1448/05/26 هـ",
+        "amount": 500,
+        "additionalAmount": 0,
+        "addedBy": ""
       }
     ],
     "specialEvents": [],
@@ -260,5 +267,5 @@
       "archivedDate": "٢٦ ديسمبر ٢٠٢٥"
     }
   ],
-  "lastUpdate": "٩ أغسطس ٢٠٢٦ في ١٠:٢٧ ص"
+  "lastUpdate": "٨ نوفمبر ٢٠٢٦ في ٠٨:١٨ م"
 }
